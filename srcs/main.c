@@ -15,9 +15,11 @@
 
 void	init(t_infos *infos)
 {
+	infos->tubes = (char **)malloc(sizeof(char *) * 4096);
 	infos->start = 0;
 	infos->end = 0;
 	infos->nbr_ants = 0;
+	infos->ok = 0;
 }
 
 void	stock_map(t_list *map, t_infos *infos, t_list **rooms)
@@ -43,6 +45,7 @@ int		main(void)
 	map = NULL;
 	init(&infos);
 	stock_map(map, &infos, &rooms);
+	link_rooms(&infos, &rooms);
 	print_rooms(rooms);
 	return (0);
 }
