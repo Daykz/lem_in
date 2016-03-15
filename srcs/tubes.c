@@ -12,23 +12,3 @@
 
 #include "lem_in.h"
 
-void		create_link(char *str, t_list **rooms)
-{
-	int		i;
-
-	i = 0;
-	
-}
-
-void		link_rooms(t_infos *infos, t_list **rooms)
-{
-	int		j;
-
-	j = 0;
-	while (infos->tubes[j] != NULL)
-	{
-		create_link(infos->tubes[j], rooms);
-		//printf("tube=%s\n", infos->tubes[j]);
-		j++;
-	}
-}

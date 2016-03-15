@@ -45,7 +45,6 @@ int		main(void)
 	map = NULL;
 	init(&infos);
 	stock_map(map, &infos, &rooms);
-	link_rooms(&infos, &rooms);
 	print_rooms(rooms);
 	return (0);
 }

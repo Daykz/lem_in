@@ -6,13 +6,13 @@
 #    By: dmathe <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/24 17:15:46 by dmathe            #+#    #+#              #
-#    Updated: 2015/11/24 17:15:47 by dmathe           ###   ########.fr        #
+#    Updated: 2016/03/15 08:50:15 by dmathe           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = lem_in
 
-SRCS = srcs/main.c srcs/check_map.c srcs/utils.c srcs/tubes.c
+SRCS = srcs/main.c srcs/check_map.c srcs/utils.c
 
 OBJS =		$(SRCS:.c=.o)
 

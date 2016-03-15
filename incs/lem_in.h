@@ -46,6 +46,5 @@ int 	ft_isasciis(char *str);
 int 	ft_isdigits(char *str);
 int		check_map(char *str, t_infos *infos, t_list **rooms);
 void	stock_map(t_list *map, t_infos *infos, t_list **rooms);
-void		link_rooms(t_infos *infos, t_list **rooms);
 
 #endif
