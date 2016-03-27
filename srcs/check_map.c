@@ -38,11 +38,20 @@ static t_room 	*name_to_room(char const *name, t_list **list)
 
 static void 	add_neighbor(t_room *room, t_room *neighbor)
 {
+	static	int	i = 0;
+	int			j;
 	if (room && neighbor)
 	{
-		// ICI IL FAUT REMPLIR LES VOISINS DE LA ROOM AVEC NEIGHBOR
-		// room->neighbors = neighbor
-		printf("ptr = %p\n", room->neighbors);
+		if (room->neighbors[i])
+		{
+			i++;
+		}
+		room->neighbors[i] = (t_room *)malloc(sizeof(t_room) * 42);
+		room->neighbors[i] = neighbor;
+		room->nbr_neighbors++;
+		j = i;
+		while (j >= 0)
+			j--;
 	}
 
 }
@@ -61,11 +70,17 @@ static int 		check_tubes(char *str, t_infos *infos, t_list **rooms)
 		len = tablen(split);
 		if (len == 2)
 		{
-			left = name_to_room(split[0], rooms);
-			right = name_to_room(split[1], rooms);
-			printf("left = %s right = %s\n", left->name, right->name);
+			if (!(left = name_to_room(split[0], rooms)))
+				exit (0);
+			if (!(right = name_to_room(split[1], rooms)))
+				exit (0);
+			if (left->nbr_neighbors == 0)
+			{
+				left->nbr_neighbors = 0;
+				left->neighbors = (t_room **)malloc(sizeof(t_room *) * 42);
+			}
+
 			add_neighbor(left, right);
-			add_neighbor(right, left);
 			return (1);
 		}
 		// PENSES A FREE LE **SPLIT
@@ -95,15 +110,17 @@ static 	int		check_start(char *str, t_infos *infos)
 	char **split;
 
 	i = 0;
-	if (infos->start == -1)
+	if (infos->a == -1)
 	{
 		split = ft_strsplit(str, ' ');
-		infos->start = ft_atoi(split[0]);
+		infos->start = (char *)malloc(sizeof(char) * ft_strlen(split[0]) + 1);
+		infos->start = split[0];
+		infos->a++;
 		return (1);
 	}
 	else if (ft_strcmp(str, "##start") == 0)
 	{
-		infos->start = -1;
+		infos->a = -1;
 		return (1);
 	}
 	return (0);
@@ -115,15 +132,17 @@ static	int	check_end(char *str, t_infos *infos)
 	char **split;
 
 	i = 0;
-	if (infos->end == -1)
+	if (infos->z == -1)
 	{
 		split = ft_strsplit(str, ' ');
-		infos->end = ft_atoi(split[0]);
+		infos->end = (char *)malloc(sizeof(char) * ft_strlen(split[0]) + 1);	
+		infos->end = split[0];
+		infos->z++;
 		return (1);
 	}
 	else if (ft_strcmp(str, "##end") == 0)
 	{
-		infos->end = -1;
+		infos->z = -1;
 		return (1);
 	}
 	return (0);
@@ -137,14 +156,14 @@ int check_pos(char *str, t_list **rooms, t_infos *infos)
 
 	j = 0;
 	i = 0;
-	if (infos->start > -1 && infos->ok != 2)
+	if (infos->a > -1 && infos->ok != 2)
 	{
-		list_add_next(rooms, create_room(ft_itoa(infos->start)));
+		list_add_next(rooms, create_room(infos->start));
 		infos->ok++;
 	}
-	if (infos->end > -1 && infos->ok != 2)
+	if (infos->z > -1 && infos->ok != 2)
 	{
-		list_add_next(rooms, create_room(ft_itoa(infos->end)));
+		list_add_next(rooms, create_room(infos->end));
 		infos->ok++;
 	}
 	if ((split = ft_strsplit(str, ' ')) == 0)

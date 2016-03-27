@@ -56,6 +56,7 @@ t_list *create_room(char const *name)
 		{
 			room->name = ft_strdup(name);
 			room->ant_nb = 0;
+			room->good_path = 0;
 			room->neighbors = NULL;
 			new_link->data = (void *)room;
 		}
@@ -70,18 +71,14 @@ t_list *create_room(char const *name)
 
 void	print_rooms(t_list *rooms)
 {
-	// attention roomS = t_list, room = t_room;
-	t_room *room; //temporaire pour eviter le cast
-	int i = 0;
+	t_room *room;
 
 	if (rooms)
 	{
 		while (rooms)
 		{
 			room = rooms->data;
-			printf("ROOM[%d] = name: %s, ant_nb = %d, neightbors_ptr = %p\n", i, room->name, room->ant_nb, room->neighbors);
 			rooms = rooms->next;
-			i++;
 		}
 	}
 }
