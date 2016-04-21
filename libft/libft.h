@@ -21,9 +21,11 @@
 # define INDICE		1
 # define RET		2
 
+typedef struct s_room t_room;
+
 typedef struct s_list
 {
-	void			*data;
+	t_room			*data;
 	struct s_list	*next;
 	struct s_list	*prev;
 }				t_list;

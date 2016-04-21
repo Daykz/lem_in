@@ -16,9 +16,12 @@
 void	init(t_infos *infos)
 {
 	infos->nbr_ants = 0;
-	infos->ok = 0;
-	infos->a = 0;
-	infos->z = 0;
+	infos->okstart = 0;
+	infos->okend = 0;
+	infos->a = -2;
+	infos->z = -2;
+	infos->paths = 0;
+	infos->nbr_path = 0;
 }
 
 void	stock_map(t_list *map, t_infos *infos, t_list **rooms)
@@ -35,24 +38,30 @@ void	stock_map(t_list *map, t_infos *infos, t_list **rooms)
 	printf("\n");
 }
 
-void	put_ant(t_room *neighbor)
+t_room	*go_end(t_list *rooms, t_infos *infos)
 {
-	printf("name = %s, nbr_ants = %d, ptr = %p\n", neighbor->name, neighbor->ant_nb, neighbor);
+	t_room	*room;
+	while (rooms)
+	{
+		room = rooms->data;
+		if (!ft_strcmp(room->name, infos->end))
+			return (room);
+		rooms = rooms->next;
+	}
+	return (NULL);
 }
 
-void	go_entry(t_list *rooms, t_infos *infos)
+t_room	*go_entry(t_list *rooms, t_infos *infos)
 {
-	t_room *room;
-	int 	i;
-
-	i = 0;
-	(void)infos;
-	room = rooms->data;
-	while ((i < room->nbr_neighbors) && room->neighbors)
+	t_room	*room;
+	while (rooms)
 	{
-		put_ant(room->neighbors[i]);
-		i++;
+		room = rooms->data;
+		if (!ft_strcmp(room->name, infos->start))
+			return (room);
+		rooms = rooms->next;
 	}
+	return (NULL);
 }
 
 void	lem_in(t_list *rooms, t_infos *infos)
@@ -61,13 +70,9 @@ void	lem_in(t_list *rooms, t_infos *infos)
 
 	if (rooms)
 	{
-		while (rooms)
-		{
-			room = rooms->data;
-			if (!ft_strcmp(room->name, infos->start))
-				go_entry(rooms, infos);
-			rooms = rooms->next;
-		}
+		room = go_end(rooms, infos);
+		room->good_path = 1;
+		check_path(room, rooms, infos);
 	}
 }
 
@@ -82,7 +87,8 @@ int		main(void)
 	init(&infos);
 	stock_map(map, &infos, &rooms);
 	print_rooms(rooms);
-	check_good_path(rooms, &infos);
-	//lem_in(rooms, &infos);
+	lem_in(rooms, &infos);
+	print_rooms(rooms);
+	printf("nbr_path=%d\n", infos.nbr_path);
 	return (0);
 }

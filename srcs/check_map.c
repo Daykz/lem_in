@@ -38,20 +38,16 @@ static t_room 	*name_to_room(char const *name, t_list **list)
 
 static void 	add_neighbor(t_room *room, t_room *neighbor)
 {
-	static	int	i = 0;
-	int			j;
+	int	i;
+	
+	i = 0;
 	if (room && neighbor)
 	{
-		if (room->neighbors[i])
-		{
+		while (room->neighbors[i])
 			i++;
-		}
 		room->neighbors[i] = (t_room *)malloc(sizeof(t_room) * 42);
 		room->neighbors[i] = neighbor;
 		room->nbr_neighbors++;
-		j = i;
-		while (j >= 0)
-			j--;
 	}
 
 }
@@ -74,16 +70,20 @@ static int 		check_tubes(char *str, t_infos *infos, t_list **rooms)
 				exit (0);
 			if (!(right = name_to_room(split[1], rooms)))
 				exit (0);
+			if (right->nbr_neighbors == 0)
+			{
+				right->nbr_neighbors = 0;
+				right->neighbors = (t_room **)malloc(sizeof(t_room *) * 4096);
+			}
 			if (left->nbr_neighbors == 0)
 			{
 				left->nbr_neighbors = 0;
-				left->neighbors = (t_room **)malloc(sizeof(t_room *) * 42);
+				left->neighbors = (t_room **)malloc(sizeof(t_room *) * 4096);
 			}
-
 			add_neighbor(left, right);
+			add_neighbor(right, left);
 			return (1);
 		}
-		// PENSES A FREE LE **SPLIT
 	}
 	return (0);
 }
@@ -110,13 +110,15 @@ static 	int		check_start(char *str, t_infos *infos)
 	char **split;
 
 	i = 0;
+	if (infos->okstart == 1)
+		return (0);
 	if (infos->a == -1)
 	{
 		split = ft_strsplit(str, ' ');
 		infos->start = (char *)malloc(sizeof(char) * ft_strlen(split[0]) + 1);
 		infos->start = split[0];
 		infos->a++;
-		return (1);
+		return (0);
 	}
 	else if (ft_strcmp(str, "##start") == 0)
 	{
@@ -132,13 +134,15 @@ static	int	check_end(char *str, t_infos *infos)
 	char **split;
 
 	i = 0;
+	if (infos->okend == 1)
+		return (0);
 	if (infos->z == -1)
 	{
 		split = ft_strsplit(str, ' ');
 		infos->end = (char *)malloc(sizeof(char) * ft_strlen(split[0]) + 1);	
 		infos->end = split[0];
 		infos->z++;
-		return (1);
+		return (0);
 	}
 	else if (ft_strcmp(str, "##end") == 0)
 	{
@@ -156,18 +160,22 @@ int check_pos(char *str, t_list **rooms, t_infos *infos)
 
 	j = 0;
 	i = 0;
-	if (infos->a > -1 && infos->ok != 2)
+	if (infos->a > -1 && infos->okstart != 1)
 	{
 		list_add_next(rooms, create_room(infos->start));
-		infos->ok++;
+		infos->okstart = 1;
+		return (1);
 	}
-	if (infos->z > -1 && infos->ok != 2)
+	else if (infos->z > -1 && infos->okend != 1)
 	{
 		list_add_next(rooms, create_room(infos->end));
-		infos->ok++;
+		infos->okend = 1;
+		return (1);
 	}
 	if ((split = ft_strsplit(str, ' ')) == 0)
+	{
 		return(0);
+	}
 	while (i != 3 && ft_isasciis(split[i]) == 1)
 		i++;
 	if (i == 3)
@@ -182,13 +190,13 @@ int		check_map(char *str, t_infos *infos, t_list **rooms)
 {
 	if (check_ants(str, infos) == 1)
 		return (1);
-	else if (check_start(str, infos) == 1 && infos->ok != 2)
+	else if (check_start(str, infos) == 1)
 	 	return (1);
-	else if (check_end(str, infos) == 1 && infos->ok != 2)
-	 	return (1);
+	else if (check_end(str, infos) == 1)
+		return (1);
 	else if(check_pos(str, rooms, infos) == 1)
 		return (1);
 	else if(check_tubes(str, infos, rooms) == 1)
-	 	return (1);
+		return (1);
 	return (0);
 }

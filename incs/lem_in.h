@@ -28,21 +28,27 @@ typedef struct s_room
 
 typedef struct s_infos
 {
-	int			ok;
+	int			okstart;
+	int			okend;
 	char		*start;
 	char		*end;
 	int			a;
 	int 		z;
 	int			nbr_ants;
+	int			paths;
+	int			nbr_path;
 }				t_infos;
 
-
+void	free_split(char **split);
 void	print_rooms(t_list *rooms);
 t_list *create_room(char const *name);
 int 	ft_isasciis(char *str);
 int 	ft_isdigits(char *str);
 int		check_map(char *str, t_infos *infos, t_list **rooms);
 void	stock_map(t_list *map, t_infos *infos, t_list **rooms);
-void	check_good_path(t_list *rooms, t_infos *infos);
+void	check_path(t_room *room, t_list *rooms, t_infos *infos);
+t_room	*go_entry(t_list *rooms, t_infos *infos);
+t_room	*go_end(t_list *rooms, t_infos *infos);
+int		check_no_way(t_list *rooms, t_infos *infos);
 
 #endif
